@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values": [
+		"qualityofmine:swiftness",
+		"qualityofmine:healing",
+		"qualityofmine:double_jump",
+		"qualityofmine:night_vision",
+		"qualityofmine:saturation"
+	]
+}

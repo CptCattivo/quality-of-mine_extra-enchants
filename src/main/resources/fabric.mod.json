@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "extraenchants",
+	"version": "${version}",
+	"name": "Extra Enchants",
+	"description": "Fünf neue Verzauberungen: Schnelligkeit (Hosen), Heilung (Harnisch), Doppelsprung (Schuhe) sowie Nachtsicht und Sättigung (Helm).",
+	"authors": [
+		"Christian"
+	],
+	"license": "MIT",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"de.qualityofmine.extraenchants.ExtraEnchants"
+		],
+		"client": [
+			"de.qualityofmine.extraenchants.ExtraEnchantsClient"
+		]
+	},
+	"mixins": [
+		"extraenchants.mixins.json",
+		{
+			"config": "extraenchants.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"breaks": {
+		"qualityofmine": "*"
+	},
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

@@ -1,0 +1,12 @@
+{
+	"enchantment.qualityofmine.swiftness": "Swiftness",
+	"enchantment.qualityofmine.healing": "Healing",
+	"enchantment.qualityofmine.double_jump": "Double Jump",
+	"enchantment.qualityofmine.night_vision": "Night Vision",
+	"enchantment.qualityofmine.saturation": "Saturation",
+	"key.qualityofmine.toggle_night_vision": "Toggle night vision",
+	"message.qualityofmine.night_vision.on": "Night vision on",
+	"message.qualityofmine.night_vision.off": "Night vision off",
+	"message.qualityofmine.night_vision.missing": "Your helmet has no night vision",
+	"key.category.qualityofmine.extraenchants": "Extra Enchants"
+}

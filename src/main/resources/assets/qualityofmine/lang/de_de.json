@@ -1,0 +1,12 @@
+{
+	"enchantment.qualityofmine.swiftness": "Schnelligkeit",
+	"enchantment.qualityofmine.healing": "Heilung",
+	"enchantment.qualityofmine.double_jump": "Doppelsprung",
+	"enchantment.qualityofmine.night_vision": "Nachtsicht",
+	"enchantment.qualityofmine.saturation": "Sättigung",
+	"key.qualityofmine.toggle_night_vision": "Nachtsicht ein- und ausschalten",
+	"message.qualityofmine.night_vision.on": "Nachtsicht an",
+	"message.qualityofmine.night_vision.off": "Nachtsicht aus",
+	"message.qualityofmine.night_vision.missing": "Dein Helm hat keine Nachtsicht",
+	"key.category.qualityofmine.extraenchants": "Extra Enchants"
+}
