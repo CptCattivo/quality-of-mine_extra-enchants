@@ -150,6 +150,15 @@ Mit Stufe III hält eine Mahlzeit also doppelt so lange.
 Gewicht und Kosten sind dieselben wie bei Schnelligkeit. Am Zaubertisch auf Stufe 30 mit einem Diamanthelm erscheint
 sie in rund 19 % der Verzauberungen, meist Stufe II. Mit Nachtsicht lässt sie sich auf demselben Helm kombinieren.
 
+### Unendlichkeit und Reparatur auf dem Bogen
+
+Die beiden Verzauberungen des Originalspiels lassen sich auf dem Bogen kombinieren. Das gilt in Amboss, Zaubertisch
+und überall sonst, wo das Spiel Verzauberungen zusammenführt. Alle anderen Unverträglichkeiten bleiben, wie sie sind,
+etwa Schärfe und Bann der Toten.
+
+- Umgesetzt ist das als Datei `data/minecraft/tags/enchantment/exclusive_set/bow.json`, die die Ausschlussliste des Bogens leert.
+- Bereits verzauberte Bögen bleiben unverändert, es entsteht nur eine neue Möglichkeit.
+
 ## Entwicklung
 
 Der Build läuft über den mitgelieferten Gradle Wrapper. Das Fabric-Build-Plugin Loom gibt es nur für Gradle,

@@ -137,6 +137,15 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 			check(saturation.value().getMaxLevel() == 3, "Sättigung hat die Stufen I bis III");
 			check(saturation.value().canEnchant(new ItemStack(Items.DIAMOND_HELMET)), "Sättigung passt auf den Helm");
 			check(nightVision.value().getWeight() == 2 && saturation.value().getWeight() == 2, "Nachtsicht und Sättigung haben Gewicht 2");
+			// Unendlichkeit und Reparatur vertragen sich auf dem Bogen, andere Unverträglichkeiten bleiben bestehen
+			Holder.Reference<Enchantment> infinity = enchantments.getOrThrow(Enchantments.INFINITY);
+			Holder.Reference<Enchantment> mending = enchantments.getOrThrow(Enchantments.MENDING);
+			check(Enchantment.areCompatible(infinity, mending), "Unendlichkeit und Reparatur sind kombinierbar");
+			check(infinity.value().canEnchant(new ItemStack(Items.BOW)) && mending.value().canEnchant(new ItemStack(Items.BOW)), "Beide passen auf den Bogen");
+			Holder.Reference<Enchantment> sharpness = enchantments.getOrThrow(Enchantments.SHARPNESS);
+			Holder.Reference<Enchantment> smite = enchantments.getOrThrow(Enchantments.SMITE);
+			check(!Enchantment.areCompatible(sharpness, smite), "Schärfe und Bann der Toten bleiben unverträglich");
+
 			for (Holder.Reference<Enchantment> enchantment : List.of(swiftness, healing, doubleJump, nightVision, saturation)) {
 				for (TagKey<Enchantment> tag : List.of(EnchantmentTags.IN_ENCHANTING_TABLE, EnchantmentTags.ON_RANDOM_LOOT, EnchantmentTags.TRADEABLE)) {
 					check(enchantment.is(tag), enchantment.key().identifier() + " ist im Tag " + tag.location());
