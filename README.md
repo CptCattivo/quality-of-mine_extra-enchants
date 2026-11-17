@@ -13,7 +13,7 @@ unabhängig voneinander.
 | Wide Hotbar | `wide-hotbar` | Item-Leiste mit 11 Plätzen |
 | Sleep Lapse | `sleep-lapse` | Zeitraffer beim Schlafen |
 | Breeding Break | `breeding-break` | Ruhepause nach der Paarung |
-| Pocket Pals | `pocket-pals` | Bälle zum Fangen von Tieren und Gürtel dafür |
+| Pocket Pals | `pocket-pals` | Bälle zum Fangen von Tieren, Gürtel dafür und Köcher für Pfeile |
 
 ## Installation
 
