@@ -1,6 +1,7 @@
 package de.qualityofmine.extraenchants;
 
 import de.qualityofmine.extraenchants.Feature;
+import de.qualityofmine.extraenchants.feature.elytraarmor.ElytraArmorClientFeature;
 import de.qualityofmine.extraenchants.feature.handshake.ModHandshakeClientFeature;
 import de.qualityofmine.extraenchants.feature.nightvision.NightVisionClientFeature;
 import java.util.List;
@@ -15,7 +16,8 @@ public final class ExtraEnchantsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		List<Feature> features = List.of(
 			new ModHandshakeClientFeature(),
-			new NightVisionClientFeature()
+			new NightVisionClientFeature(),
+			new ElytraArmorClientFeature()
 		);
 		features.forEach(Feature::initialize);
 	}

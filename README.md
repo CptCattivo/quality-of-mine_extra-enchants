@@ -1,6 +1,7 @@
 # Extra Enchants
 
 Fünf neue Verzauberungen: Schnelligkeit (Hosen), Heilung (Harnisch), Doppelsprung (Schuhe) sowie Nachtsicht und Sättigung (Helm).
+Dazu die Elytra-Rüstung, ein Diamantharnisch mit Elytren und Raketenschub.
 
 Teil der Mod-Reihe *Quality of Mine*. Jedes Feature des früheren Gesamt-Mods ist jetzt eine eigene Mod, die sich einzeln
 installieren lässt. Alle Mods der Reihe laufen auf Einzelspielerwelten und auf Mehrspieler-Servern und funktionieren
@@ -8,7 +9,7 @@ unabhängig voneinander.
 
 | Mod | Projekt | Inhalt |
 |---|---|---|
-| Extra Enchants (diese Mod) | `extra-enchants` | Fünf neue Verzauberungen |
+| Extra Enchants (diese Mod) | `extra-enchants` | Fünf neue Verzauberungen und die Elytra-Rüstung |
 | Tidy Inventory | `tidy-inventory` | Items nicht aufheben und Mülleimer im Inventar |
 | Wide Hotbar | `wide-hotbar` | Item-Leiste mit 11 Plätzen |
 | Sleep Lapse | `sleep-lapse` | Zeitraffer beim Schlafen |
@@ -57,7 +58,8 @@ Beide würden dieselben Inhalte anmelden. Die Mod meldet das beim Start mit eine
   Wer selbst baut, führt vorher `gradlew build` aus.
 - **Deinstallation:** `%APPDATA%\.minecraft\mods\extra-enchants-2.0.0.jar` löschen.
 
-Ohne die Mod verschwindet aus einer Welt alles, was zu ihr gehört: die Verzauberungen Schnelligkeit, Heilung, Doppelsprung, Nachtsicht und Sättigung.
+Ohne die Mod verschwindet aus einer Welt alles, was zu ihr gehört: die Verzauberungen Schnelligkeit, Heilung, Doppelsprung, Nachtsicht und Sättigung
+sowie alle Elytra-Rüstungen samt ihren Verzauberungen. Lege sie vorher ab, zum Beispiel in eine Truhe, wenn du die Mod später wieder installieren willst.
 
 ## Server
 
@@ -85,6 +87,7 @@ Das ändert sich auf einem Server:
 
 - **Doppelsprung und Schnelligkeit** rechnet der Client des jeweiligen Spielers, wie auch im Originalspiel Sprünge und
   Bewegung. Der Server übernimmt sie.
+- **Raketenschub** prüft und zählt der Server. Der Client meldet nur, dass die Sprungtaste im Flug gedrückt wurde.
 - **Nachtsicht-Einstellung** gehört jedem Spieler einzeln und steht in dessen Spielerdaten. Sie bleibt nach dem Tod und
   nach einem Neustart des Servers erhalten.
 - **Server ohne die Mod:** Wer mit installierter Mod auf einen fremden Server ohne sie geht, sollte sie dort nicht nutzen. Dafür nimmst du das normale Vanilla-Profil des Launchers.
@@ -158,6 +161,40 @@ etwa Schärfe und Bann der Toten.
 
 - Umgesetzt ist das als Datei `data/minecraft/tags/enchantment/exclusive_set/bow.json`, die die Ausschlussliste des Bogens leert.
 - Bereits verzauberte Bögen bleiben unverändert, es entsteht nur eine neue Möglichkeit.
+
+### Elytra-Rüstung
+
+Ein Diamantharnisch mit Elytren: Sie schützt wie der Harnisch, und du gleitest damit wie mit Elytren.
+Mit geladenen Feuerwerksraketen gibt sie im Flug Schub.
+
+**Herstellen.** Lege im Amboss den Diamantharnisch links und die Elytren rechts hinein. Das kostet 5 Erfahrungsstufen,
+dazu wie im Spiel die Kosten früherer Ambossarbeiten an beiden Teilen.
+
+- Die Rüstung übernimmt alles vom Harnisch: Verzauberungen, Namen und Rüstungsbesatz. Die Verzauberungen der Elytren
+  kommen dazu, bei doppelten zählt die höhere Stufe.
+- Die Haltbarkeit ist die Summe beider Teile, 528 + 432 = 960. Treffer und Fliegen zehren am selben Balken, der
+  Verschleiß beider Teile wird übernommen.
+- Repariert wird mit Diamanten oder Phantomhaut, oder im Amboss mit einer zweiten Elytra-Rüstung.
+- Verzaubern lässt sie sich wie ein Harnisch, also auch mit Heilung.
+- Bei einer Haltbarkeit von 1 kannst du wie bei Elytren nicht mehr gleiten. Treffer können sie aber wie jede Rüstung zerbrechen.
+
+**Netherit.** Am Schmiedetisch wird sie mit Netherit-Aufwertung und Netheritbarren zur Netherit-Elytra-Rüstung
+(Haltbarkeit 592 + 432 = 1024). Sie schützt wie ein Netheritharnisch und verbrennt nicht.
+
+**Raketenschub.** Nimm im Inventar Feuerwerksraketen auf und klicke damit auf die Rüstung, wie beim Bündel:
+
+| Klick | Wirkung |
+|---|---|
+| Rechtsklick | Eine Rakete hineinlegen |
+| Linksklick | So viele Raketen hineinlegen, wie passen |
+
+- Eine Rakete gibt 48 Schübe, voll sind 2 Raketen, also 96 Schübe. Eine weitere Rakete passt erst hinein, wenn die
+  Hälfte verbraucht ist, so geht keine Ladung verloren. Jede Rakete zählt gleich, auch eine mit Feuerwerksstern.
+- Im Flug gibt jedes erneute Drücken der Sprungtaste einen Schub wie eine Rakete der Flugdauer 1 in der Hand, ohne Explosion.
+- Ein orangefarbener Balken über dem Haltbarkeitsbalken zeigt die Ladung. Der Tooltip nennt die genaue Zahl.
+- Solange sie geladen ist, trägst du zwei Raketen auf dem Rücken, auch das Symbol zeigt sie dann.
+- Im Kreativ-Modus verbrauchen die Schübe keine Ladung.
+- Die Zahl der Schübe pro Rakete steht als `BOOSTS_PER_ROCKET` in `RocketCharge`.
 
 ## Entwicklung
 

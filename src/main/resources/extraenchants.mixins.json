@@ -3,6 +3,7 @@
 	"package": "de.qualityofmine.extraenchants.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
+		"AnvilMenuMixin",
 		"FoodDataMixin",
 		"PlayerMixin"
 	],

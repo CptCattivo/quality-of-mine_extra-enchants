@@ -4,11 +4,12 @@ import java.util.List;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
+import de.qualityofmine.extraenchants.feature.elytraarmor.ElytraArmorFeature;
 import de.qualityofmine.extraenchants.feature.handshake.ModHandshakeFeature;
 import de.qualityofmine.extraenchants.feature.nightvision.NightVisionFeature;
 
 /**
- * Extra Enchants: Fünf neue Verzauberungen. Gehört zur Mod-Reihe „Quality of Mine“, die jedes Feature als eigene Mod anbietet.
+ * Extra Enchants: Fünf neue Verzauberungen und die Elytra-Rüstung. Gehört zur Mod-Reihe „Quality of Mine“, die jedes Feature als eigene Mod anbietet.
  * Alle Inhalte stehen im Namensraum {@code qualityofmine}, damit bestehende Welten ihre Daten behalten.
  */
 public final class ExtraEnchants implements ModInitializer {
@@ -29,7 +30,8 @@ public final class ExtraEnchants implements ModInitializer {
 	public void onInitialize() {
 		List<Feature> features = List.of(
 			new ModHandshakeFeature(),
-			new NightVisionFeature()
+			new NightVisionFeature(),
+			new ElytraArmorFeature()
 		);
 		features.forEach(Feature::initialize);
 	}

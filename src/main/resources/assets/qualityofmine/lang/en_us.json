@@ -8,5 +8,9 @@
 	"message.qualityofmine.night_vision.on": "Night vision on",
 	"message.qualityofmine.night_vision.off": "Night vision off",
 	"message.qualityofmine.night_vision.missing": "Your helmet has no night vision",
-	"key.category.qualityofmine.extraenchants": "Extra Enchants"
+	"key.category.qualityofmine.extraenchants": "Extra Enchants",
+	"item.qualityofmine.elytra_armor": "Elytra Armor",
+	"item.qualityofmine.netherite_elytra_armor": "Netherite Elytra Armor",
+	"item.qualityofmine.elytra_armor.charge": "Rocket boost: %s of %s",
+	"item.qualityofmine.elytra_armor.empty": "Charge with firework rockets"
 }

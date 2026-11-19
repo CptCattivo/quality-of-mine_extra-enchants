@@ -3,7 +3,7 @@
 	"id": "extraenchants",
 	"version": "${version}",
 	"name": "Extra Enchants",
-	"description": "Fünf neue Verzauberungen: Schnelligkeit (Hosen), Heilung (Harnisch), Doppelsprung (Schuhe) sowie Nachtsicht und Sättigung (Helm). Zudem lassen sich Unendlichkeit und Reparatur auf dem Bogen kombinieren.",
+	"description": "Fünf neue Verzauberungen: Schnelligkeit (Hosen), Heilung (Harnisch), Doppelsprung (Schuhe) sowie Nachtsicht und Sättigung (Helm). Dazu die Elytra-Rüstung, ein Diamantharnisch mit Elytren und Raketenschub. Zudem lassen sich Unendlichkeit und Reparatur auf dem Bogen kombinieren.",
 	"authors": [
 		"Christian"
 	],

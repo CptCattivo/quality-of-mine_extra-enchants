@@ -3,9 +3,12 @@ package de.qualityofmine.extraenchants.gametest;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.logging.LogUtils;
 import de.qualityofmine.extraenchants.ModEnchantments;
+import de.qualityofmine.extraenchants.feature.elytraarmor.ElytraArmors;
+import de.qualityofmine.extraenchants.feature.elytraarmor.RocketCharge;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
@@ -14,17 +17,22 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestServerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.EnchantmentTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +41,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
@@ -40,11 +49,17 @@ import net.minecraft.world.entity.ai.goal.TemptGoal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -110,6 +125,7 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 			testHealing(context, server);
 			testNightVision(context, server);
 			testSaturation(context, server);
+			testElytraArmor(context, server);
 		}
 	}
 
@@ -328,6 +344,176 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 		check(saturationLost(context, server, 2) == 7.0F, "Sättigung II spart 25 Prozent");
 		check(saturationLost(context, server, 3) == 4.0F, "Sättigung III halbiert den Verbrauch");
 		server.runCommand("item replace entity @a armor.head with minecraft:air");
+	}
+
+	/** Legt Harnisch und Elytren in einen Amboss und nimmt das Ergebnis heraus, wie es ein Spieler tun würde. */
+	private static ItemStack combineInAnvil(final MinecraftServer server, final ItemStack input, final ItemStack addition, final int levels) {
+		ServerPlayer player = player(server);
+		AnvilMenu anvil = new AnvilMenu(0, player.getInventory(), ContainerLevelAccess.NULL);
+		anvil.getSlot(AnvilMenu.INPUT_SLOT).set(input);
+		anvil.getSlot(AnvilMenu.ADDITIONAL_SLOT).set(addition);
+		player.experienceLevel = levels;
+		anvil.clicked(AnvilMenu.RESULT_SLOT, 0, ContainerInput.PICKUP, player);
+		ItemStack taken = anvil.getCarried();
+		anvil.setCarried(ItemStack.EMPTY);
+		return taken;
+	}
+
+	private static void testElytraArmor(final ClientGameTestContext context, final TestServerContext server) {
+		server.runOnServer(s -> {
+			var enchantments = s.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+			Holder.Reference<Enchantment> protection = enchantments.getOrThrow(Enchantments.PROTECTION);
+			Holder.Reference<Enchantment> unbreaking = enchantments.getOrThrow(Enchantments.UNBREAKING);
+			Holder.Reference<Enchantment> mending = enchantments.getOrThrow(Enchantments.MENDING);
+			Holder.Reference<Enchantment> healing = enchantments.getOrThrow(ModEnchantments.HEALING);
+
+			ItemStack armor = new ItemStack(ElytraArmors.ELYTRA_ARMOR);
+			ItemStack netherite = new ItemStack(ElytraArmors.NETHERITE_ELYTRA_ARMOR);
+			check(armor.getMaxDamage() == 528 + 432, "Die Elytra-Rüstung hält so viel aus wie Harnisch und Elytren zusammen");
+			check(netherite.getMaxDamage() == 592 + 432, "Die Netherit-Elytra-Rüstung hält so viel aus wie Harnisch und Elytren zusammen");
+			check(armor.has(DataComponents.GLIDER) && armor.is(ItemTags.CHEST_ARMOR), "Die Elytra-Rüstung gleitet und zählt als Harnisch");
+			check(netherite.has(DataComponents.DAMAGE_RESISTANT), "Die Netherit-Elytra-Rüstung verbrennt nicht");
+			check(armor.isValidRepairItem(new ItemStack(Items.DIAMOND)) && armor.isValidRepairItem(new ItemStack(Items.PHANTOM_MEMBRANE)),
+				"Die Elytra-Rüstung lässt sich mit Diamanten und Phantomhaut reparieren");
+			for (Holder.Reference<Enchantment> enchantment : List.of(protection, unbreaking, mending, healing)) {
+				check(enchantment.value().canEnchant(armor), enchantment.key().identifier() + " passt auf die Elytra-Rüstung");
+			}
+
+			// Amboss: Die Verzauberungen beider Teile bleiben, der Verschleiß addiert sich
+			ItemStack chestplate = new ItemStack(Items.DIAMOND_CHESTPLATE);
+			chestplate.enchant(protection, 4);
+			chestplate.enchant(healing, 2);
+			chestplate.enchant(unbreaking, 2);
+			chestplate.setDamageValue(100);
+			ItemStack elytra = new ItemStack(Items.ELYTRA);
+			elytra.enchant(unbreaking, 3);
+			elytra.enchant(mending, 1);
+			elytra.setDamageValue(50);
+			ItemStack combined = combineInAnvil(s, chestplate.copy(), elytra.copy(), 10);
+			check(combined.is(ElytraArmors.ELYTRA_ARMOR), "Harnisch und Elytren ergeben im Amboss die Elytra-Rüstung");
+			check(combined.getDamageValue() == 150, "Der Verschleiß beider Teile bleibt erhalten");
+			check(EnchantmentHelper.getItemEnchantmentLevel(protection, combined) == 4 && EnchantmentHelper.getItemEnchantmentLevel(healing, combined) == 2,
+				"Die Verzauberungen des Harnischs bleiben erhalten");
+			check(EnchantmentHelper.getItemEnchantmentLevel(unbreaking, combined) == 3 && EnchantmentHelper.getItemEnchantmentLevel(mending, combined) == 1,
+				"Von den Elytren kommen Haltbarkeit III und Reparatur dazu");
+			check(player(s).experienceLevel == 5, "Das Zusammenfügen kostet 5 Stufen");
+			check(combineInAnvil(s, elytra.copy(), chestplate.copy(), 10).isEmpty(), "Elytren links und Harnisch rechts ergeben nichts");
+			ItemStack expensive = new ItemStack(Items.DIAMOND_CHESTPLATE);
+			expensive.set(DataComponents.REPAIR_COST, 39);
+			check(combineInAnvil(s, expensive, new ItemStack(Items.ELYTRA), 100).isEmpty(), "Zu teure Ambossarbeit bleibt wie im Spiel gesperrt");
+			player(s).experienceLevel = 0;
+			player(s).getInventory().clearContent();
+
+			// Schmiedetisch: Netherit-Aufwertung mit allen Komponenten
+			SmithingRecipeInput smithing = new SmithingRecipeInput(new ItemStack(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), combined,
+				new ItemStack(Items.NETHERITE_INGOT));
+			ItemStack upgraded = s.getRecipeManager().getRecipeFor(RecipeType.SMITHING, smithing, s.overworld(), (ResourceKey<Recipe<?>>) null)
+				.map(recipe -> recipe.value().assemble(smithing)).orElse(ItemStack.EMPTY);
+			check(upgraded.is(ElytraArmors.NETHERITE_ELYTRA_ARMOR), "Der Schmiedetisch macht daraus die Netherit-Elytra-Rüstung");
+			check(EnchantmentHelper.getItemEnchantmentLevel(protection, upgraded) == 4, "Die Verzauberungen überstehen die Netherit-Aufwertung");
+
+			// Laden wie beim Bündel: Rechtsklick legt eine Rakete hinein, Linksklick so viele wie passen
+			ServerPlayer player = player(s);
+			player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(ElytraArmors.ELYTRA_ARMOR));
+			int chestSlot = 6;
+			var menu = player.inventoryMenu;
+			menu.setCarried(new ItemStack(Items.FIREWORK_ROCKET, 5));
+			menu.clicked(chestSlot, 1, ContainerInput.PICKUP, player);
+			check(ElytraArmors.chargeOf(player.getItemBySlot(EquipmentSlot.CHEST)) == 48 && menu.getCarried().getCount() == 4,
+				"Rechtsklick lädt eine Rakete für 48 Schübe");
+			menu.clicked(chestSlot, 0, ContainerInput.PICKUP, player);
+			check(ElytraArmors.chargeOf(player.getItemBySlot(EquipmentSlot.CHEST)) == 96 && menu.getCarried().getCount() == 3,
+				"Linksklick füllt bis 2 Raketen auf");
+			menu.clicked(chestSlot, 0, ContainerInput.PICKUP, player);
+			check(player.getItemBySlot(EquipmentSlot.CHEST).is(ElytraArmors.ELYTRA_ARMOR) && menu.getCarried().getCount() == 3,
+				"Eine volle Rüstung nimmt nichts mehr und bleibt angelegt");
+			menu.setCarried(ItemStack.EMPTY);
+		});
+		// Die Attribute angelegter Ausrüstung übernimmt das Spiel erst im nächsten Tick
+		context.waitTicks(2);
+		check(server.computeOnServer(s -> player(s).getArmorValue()) == 8, "Die Elytra-Rüstung schützt wie ein Diamantharnisch");
+		server.runCommand("item replace entity @a armor.chest with minecraft:air");
+
+		testElytraArmorFlight(context, server);
+		testElytraArmorInventory(context, server);
+	}
+
+	private static double horizontalSpeed(final ClientGameTestContext context) {
+		return context.computeOnClient(m -> m.player.getDeltaMovement().horizontalDistance());
+	}
+
+	private static int rocketsNearPlayer(final TestServerContext server) {
+		return server.computeOnServer(s -> player(s).level()
+			.getEntitiesOfClass(FireworkRocketEntity.class, player(s).getBoundingBox().inflate(5.0)).size());
+	}
+
+	private static void pressJump(final ClientGameTestContext context) {
+		context.getInput().holdKey(options -> options.keyJump);
+		context.waitTick();
+		context.getInput().releaseKey(options -> options.keyJump);
+	}
+
+	private static void testElytraArmorFlight(final ClientGameTestContext context, final TestServerContext server) {
+		Vec3 start = server.computeOnServer(s -> player(s).position());
+		server.runCommand("item replace entity @a armor.chest with qualityofmine:elytra_armor");
+		server.runCommand("tp @a ~ ~60 ~ 0 10");
+		context.waitTicks(3);
+		pressJump(context);
+		context.waitTicks(5);
+		check(context.computeOnClient(m -> m.player.isFallFlying()), "Mit der Elytra-Rüstung gleitet der Spieler");
+		check(server.computeOnServer(s -> player(s).isFallFlying()), "Der Server sieht den Gleitflug");
+
+		pressJump(context);
+		context.waitTicks(5);
+		check(rocketsNearPlayer(server) == 0, "Ohne Ladung gibt die Sprungtaste keinen Schub");
+		check(context.computeOnClient(m -> m.player.isFallFlying()), "Ohne Ladung gleitet der Spieler einfach weiter");
+
+		server.runOnServer(s -> ElytraArmors.setCharge(player(s).getItemBySlot(EquipmentSlot.CHEST), RocketCharge.MAX_BOOSTS));
+		context.waitTicks(2);
+		double before = horizontalSpeed(context);
+		pressJump(context);
+		context.waitTicks(3);
+		check(rocketsNearPlayer(server) == 1, "Mit Ladung gibt die Sprungtaste einen Schub wie eine Rakete");
+		check(server.computeOnServer(s -> ElytraArmors.chargeOf(player(s).getItemBySlot(EquipmentSlot.CHEST))) == RocketCharge.MAX_BOOSTS - 1,
+			"Ein Schub kostet eine Ladung");
+		context.waitTicks(7);
+		double after = horizontalSpeed(context);
+		LOGGER.info("[QoM-Test] Geschwindigkeit vor dem Schub {}, danach {}", before, after);
+		check(after > before + 0.5, "Der Schub beschleunigt den Spieler");
+		check(server.computeOnServer(s -> player(s).getHealth() == player(s).getMaxHealth()), "Der Schub verletzt den Spieler nicht");
+
+		context.runOnClient(m -> m.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(2);
+		context.takeScreenshot("qom_elytra_armor_back");
+		context.runOnClient(m -> m.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(2);
+		context.takeScreenshot("qom_elytra_armor_front");
+		context.runOnClient(m -> m.options.setCameraType(CameraType.FIRST_PERSON));
+
+		server.runCommand("item replace entity @a armor.chest with minecraft:air");
+		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", start.x, start.y, start.z));
+		context.waitFor(m -> m.player.onGround());
+		server.runOnServer(s -> player(s).setHealth(player(s).getMaxHealth()));
+	}
+
+	/** Bildschirmfoto der Ladebalken und Symbole: geladen und beschädigt, Netherit mit wenig Ladung, ungeladen. */
+	private static void testElytraArmorInventory(final ClientGameTestContext context, final TestServerContext server) {
+		server.runCommand("item replace entity @a hotbar.0 with qualityofmine:elytra_armor[qualityofmine:rocket_charge=70,damage=300]");
+		server.runCommand("item replace entity @a hotbar.1 with qualityofmine:netherite_elytra_armor[qualityofmine:rocket_charge=20]");
+		server.runCommand("item replace entity @a hotbar.2 with qualityofmine:elytra_armor");
+		server.runCommand("item replace entity @a armor.chest with qualityofmine:elytra_armor[qualityofmine:rocket_charge=96]");
+		context.waitTicks(5);
+		context.runOnClient(m -> m.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(2);
+		context.takeScreenshot("qom_elytra_armor_jetpack");
+		context.runOnClient(m -> m.options.setCameraType(CameraType.FIRST_PERSON));
+		context.setScreen(() -> new InventoryScreen(Minecraft.getInstance().player));
+		context.waitTicks(5);
+		context.takeScreenshot("qom_elytra_armor_inventory");
+		context.setScreen(() -> null);
+		for (String slot : List.of("hotbar.0", "hotbar.1", "hotbar.2", "armor.chest")) {
+			server.runCommand("item replace entity @a " + slot + " with minecraft:air");
+		}
 	}
 
 	static ServerPlayer player(final MinecraftServer server) {

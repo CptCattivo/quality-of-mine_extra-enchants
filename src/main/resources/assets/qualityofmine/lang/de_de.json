@@ -8,5 +8,9 @@
 	"message.qualityofmine.night_vision.on": "Nachtsicht an",
 	"message.qualityofmine.night_vision.off": "Nachtsicht aus",
 	"message.qualityofmine.night_vision.missing": "Dein Helm hat keine Nachtsicht",
-	"key.category.qualityofmine.extraenchants": "Extra Enchants"
+	"key.category.qualityofmine.extraenchants": "Extra Enchants",
+	"item.qualityofmine.elytra_armor": "Elytra-Rüstung",
+	"item.qualityofmine.netherite_elytra_armor": "Netherit-Elytra-Rüstung",
+	"item.qualityofmine.elytra_armor.charge": "Raketenschub: %s von %s",
+	"item.qualityofmine.elytra_armor.empty": "Mit Feuerwerksraketen aufladen"
 }
