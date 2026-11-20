@@ -435,6 +435,7 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 		server.runCommand("item replace entity @a armor.chest with minecraft:air");
 
 		testElytraArmorFlight(context, server);
+		testElytraArmorLaunch(context, server);
 		testElytraArmorInventory(context, server);
 	}
 
@@ -480,6 +481,11 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 		double after = horizontalSpeed(context);
 		LOGGER.info("[QoM-Test] Geschwindigkeit vor dem Schub {}, danach {}", before, after);
 		check(after > before + 0.5, "Der Schub beschleunigt den Spieler");
+		// Eine Rakete aus der Hand bringt den Spieler in derselben Zeit auf rund 1,68 Blöcke pro Tick
+		check(after > 1.9, "Der Schub ist rund 20 Prozent stärker als eine Rakete aus der Hand");
+		// Eine Rakete aus der Hand brennt höchstens 31 Ticks
+		context.waitTicks(50);
+		check(rocketsNearPlayer(server) == 1, "Der Schub brennt nach 3 Sekunden noch");
 		check(server.computeOnServer(s -> player(s).getHealth() == player(s).getMaxHealth()), "Der Schub verletzt den Spieler nicht");
 
 		context.runOnClient(m -> m.options.setCameraType(CameraType.THIRD_PERSON_BACK));
@@ -492,6 +498,54 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 
 		server.runCommand("item replace entity @a armor.chest with minecraft:air");
 		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", start.x, start.y, start.z));
+		context.waitFor(m -> m.player.onGround());
+		server.runOnServer(s -> player(s).setHealth(player(s).getMaxHealth()));
+	}
+
+	private static int chestCharge(final TestServerContext server) {
+		return server.computeOnServer(s -> ElytraArmors.chargeOf(player(s).getItemBySlot(EquipmentSlot.CHEST)));
+	}
+
+	/** Taste V am Boden und im Fall: Der Spieler hebt ab, gleitet und bekommt Schub. Die Leertaste bleibt ein normaler Sprung. */
+	private static void testElytraArmorLaunch(final ClientGameTestContext context, final TestServerContext server) {
+		Vec3 start = server.computeOnServer(s -> player(s).position());
+		server.runCommand("item replace entity @a armor.chest with qualityofmine:elytra_armor[qualityofmine:rocket_charge=96]");
+		server.runCommand("tp @a ~ ~ ~ 0 -30");
+		context.waitTicks(5);
+
+		pressJump(context);
+		context.waitTicks(10);
+		check(!context.computeOnClient(m -> m.player.isFallFlying()) && chestCharge(server) == 96, "Die Leertaste am Boden bleibt ein normaler Sprung");
+		context.waitFor(m -> m.player.onGround());
+		context.waitTicks(5);
+
+		double startY = context.computeOnClient(m -> m.player.getY());
+		context.getInput().pressKey(InputConstants.KEY_V);
+		context.waitTicks(20);
+		double height = context.computeOnClient(m -> m.player.getY()) - startY;
+		LOGGER.info("[QoM-Test] Höhe eine Sekunde nach dem Raketenstart: {}", height);
+		check(context.computeOnClient(m -> m.player.isFallFlying()), "Taste V startet am Boden direkt in den Gleitflug");
+		check(chestCharge(server) == 95, "Der Raketenstart kostet eine Ladung");
+		check(height > 5.0, "Der Raketenstart hebt den Spieler deutlich vom Boden ab");
+
+		context.getInput().pressKey(InputConstants.KEY_V);
+		context.waitTicks(3);
+		check(chestCharge(server) == 94, "Im Gleitflug gibt Taste V Schub wie die Leertaste");
+
+		// Im Fall öffnet Taste V sofort die Flügel, ohne vorher die Leertaste zu drücken. Erst landen, sonst gleitet er weiter.
+		server.runCommand("item replace entity @a armor.chest with minecraft:air");
+		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f 0 0", start.x, start.y, start.z));
+		context.waitFor(m -> m.player.onGround());
+		server.runCommand("item replace entity @a armor.chest with qualityofmine:elytra_armor[qualityofmine:rocket_charge=96]");
+		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f 0 0", start.x, start.y + 40, start.z));
+		context.waitTicks(5);
+		check(!context.computeOnClient(m -> m.player.isFallFlying()), "Nach dem Teleport fällt der Spieler ohne zu gleiten");
+		context.getInput().pressKey(InputConstants.KEY_V);
+		context.waitTicks(5);
+		check(context.computeOnClient(m -> m.player.isFallFlying()) && chestCharge(server) == 95, "Im Fall startet Taste V Gleitflug und Schub");
+
+		server.runCommand("item replace entity @a armor.chest with minecraft:air");
+		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f 0 0", start.x, start.y, start.z));
 		context.waitFor(m -> m.player.onGround());
 		server.runOnServer(s -> player(s).setHealth(player(s).getMaxHealth()));
 	}

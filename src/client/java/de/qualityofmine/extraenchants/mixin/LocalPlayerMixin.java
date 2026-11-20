@@ -15,6 +15,7 @@ abstract class LocalPlayerMixin {
 	@Inject(method = "aiStep", at = @At("HEAD"))
 	private void extraenchants$resetAirJump(final CallbackInfo ci) {
 		DoubleJumpClient.tick((LocalPlayer) (Object) this);
+		ElytraArmorClientFeature.tick((LocalPlayer) (Object) this);
 	}
 
 	/**

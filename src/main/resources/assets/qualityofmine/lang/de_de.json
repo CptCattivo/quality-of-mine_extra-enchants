@@ -12,5 +12,6 @@
 	"item.qualityofmine.elytra_armor": "Elytra-Rüstung",
 	"item.qualityofmine.netherite_elytra_armor": "Netherit-Elytra-Rüstung",
 	"item.qualityofmine.elytra_armor.charge": "Raketenschub: %s von %s",
-	"item.qualityofmine.elytra_armor.empty": "Mit Feuerwerksraketen aufladen"
+	"item.qualityofmine.elytra_armor.empty": "Mit Feuerwerksraketen aufladen",
+	"key.qualityofmine.rocket_launch": "Raketenstart (Elytra-Rüstung)"
 }

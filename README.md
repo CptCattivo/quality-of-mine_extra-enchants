@@ -87,7 +87,7 @@ Das ändert sich auf einem Server:
 
 - **Doppelsprung und Schnelligkeit** rechnet der Client des jeweiligen Spielers, wie auch im Originalspiel Sprünge und
   Bewegung. Der Server übernimmt sie.
-- **Raketenschub** prüft und zählt der Server. Der Client meldet nur, dass die Sprungtaste im Flug gedrückt wurde.
+- **Raketenschub und Raketenstart** prüft und zählt der Server. Der Client meldet nur, dass die Sprungtaste im Flug gedrückt wurde.
 - **Nachtsicht-Einstellung** gehört jedem Spieler einzeln und steht in dessen Spielerdaten. Sie bleibt nach dem Tod und
   nach einem Neustart des Servers erhalten.
 - **Server ohne die Mod:** Wer mit installierter Mod auf einen fremden Server ohne sie geht, sollte sie dort nicht nutzen. Dafür nimmst du das normale Vanilla-Profil des Launchers.
@@ -190,11 +190,25 @@ dazu wie im Spiel die Kosten früherer Ambossarbeiten an beiden Teilen.
 
 - Eine Rakete gibt 48 Schübe, voll sind 2 Raketen, also 96 Schübe. Eine weitere Rakete passt erst hinein, wenn die
   Hälfte verbraucht ist, so geht keine Ladung verloren. Jede Rakete zählt gleich, auch eine mit Feuerwerksstern.
-- Im Flug gibt jedes erneute Drücken der Sprungtaste einen Schub wie eine Rakete der Flugdauer 1 in der Hand, ohne Explosion.
+- Im Flug gibt jedes erneute Drücken der Sprungtaste einen Schub. Er zieht 20 % stärker als eine Rakete in der Hand und
+  brennt rund 5 Sekunden länger, also 6 bis 6,5 Sekunden, ohne Explosion.
 - Ein orangefarbener Balken über dem Haltbarkeitsbalken zeigt die Ladung. Der Tooltip nennt die genaue Zahl.
 - Solange sie geladen ist, trägst du zwei Raketen auf dem Rücken, auch das Symbol zeigt sie dann.
 - Im Kreativ-Modus verbrauchen die Schübe keine Ladung.
-- Die Zahl der Schübe pro Rakete steht als `BOOSTS_PER_ROCKET` in `RocketCharge`.
+- Die Zahl der Schübe pro Rakete steht als `BOOSTS_PER_ROCKET` in `RocketCharge`, Stärke und Dauer stehen als
+  `SPEED_FACTOR` und `FLIGHT_DURATION` in `ArmorRocket`.
+
+**Raketenstart.** Mit geladener Rüstung startest du per Taste direkt in den Flug, ohne Kette aus Sprung, Doppelsprung und Flügel öffnen.
+
+| Taste (Standard) | Wirkung |
+|---|---|
+| `V` am Boden | Kräftiger Absprung, Flügel auf und Schub |
+| `V` im Fall | Sofort Flügel auf und Schub |
+| `V` im Gleitflug | Schub wie mit der Sprungtaste |
+
+- Die Taste lässt sich unter *Optionen > Steuerung* ändern, Kategorie Extra Enchants.
+- Jeder Start kostet eine Ladung. Im Wasser und beim Reiten gibt es keinen Start.
+- Die Richtung bestimmt dein Blick: Schau beim Start nach oben, um schnell an Höhe zu gewinnen.
 
 ## Entwicklung
 

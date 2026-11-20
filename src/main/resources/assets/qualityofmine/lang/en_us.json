@@ -12,5 +12,6 @@
 	"item.qualityofmine.elytra_armor": "Elytra Armor",
 	"item.qualityofmine.netherite_elytra_armor": "Netherite Elytra Armor",
 	"item.qualityofmine.elytra_armor.charge": "Rocket boost: %s of %s",
-	"item.qualityofmine.elytra_armor.empty": "Charge with firework rockets"
+	"item.qualityofmine.elytra_armor.empty": "Charge with firework rockets",
+	"key.qualityofmine.rocket_launch": "Rocket launch (elytra armor)"
 }

@@ -12,11 +12,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 /**
  * Elytra-Rüstung: Diamantharnisch und Elytren in einem Teil, am Schmiedetisch zu Netherit aufwertbar. Mit geladenen
- * Feuerwerksraketen gibt die Sprungtaste im Flug einen Schub wie eine Rakete in der Hand.
+ * Feuerwerksraketen gibt die Sprungtaste im Flug einen Schub, eine eigene Taste startet direkt in den Flug.
  */
 public final class ElytraArmorFeature implements Feature {
 	@Override
@@ -41,7 +40,6 @@ public final class ElytraArmorFeature implements Feature {
 		if (!player.hasInfiniteMaterials()) {
 			ElytraArmors.setCharge(chest, charge - 1);
 		}
-		// Eine schlichte Rakete ohne Feuerwerksstern: Flugdauer 1 und keine Explosion, die Schaden macht
-		player.level().addFreshEntity(new FireworkRocketEntity(player.level(), new ItemStack(Items.FIREWORK_ROCKET), player));
+		player.level().addFreshEntity(new FireworkRocketEntity(player.level(), ArmorRocket.createStack(), player));
 	}
 }

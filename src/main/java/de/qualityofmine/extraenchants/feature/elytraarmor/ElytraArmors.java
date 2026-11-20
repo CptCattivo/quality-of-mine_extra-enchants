@@ -7,6 +7,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -32,6 +33,11 @@ public final class ElytraArmors {
 	public static final DataComponentType<Integer> ROCKET_CHARGE = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
 		ExtraEnchants.id("rocket_charge"),
 		DataComponentType.<Integer>builder().persistent(ExtraCodecs.POSITIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT).build());
+
+	/** Kennzeichnet die Rakete hinter einem Schub, siehe {@link ArmorRocket}. */
+	public static final DataComponentType<Unit> ARMOR_ROCKET = Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE,
+		ExtraEnchants.id("armor_rocket"),
+		DataComponentType.<Unit>builder().persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).build());
 
 	public static final Item ELYTRA_ARMOR = register("elytra_armor", ArmorMaterials.DIAMOND, false);
 	public static final Item NETHERITE_ELYTRA_ARMOR = register("netherite_elytra_armor", ArmorMaterials.NETHERITE, true);
