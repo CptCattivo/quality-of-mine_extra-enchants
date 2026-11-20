@@ -274,7 +274,30 @@ public final class ExtraEnchantsClientGameTest implements FabricClientGameTest {
 		check(jumpHeight(context, 2) > 2.0, "Mit Doppelsprung kommt der Spieler über 2 Blöcke");
 		check(jumpHeight(context, 3) < 2.6, "In der Luft gibt es nur einen zusätzlichen Sprung");
 		check(server.computeOnServer(s -> player(s).getHealth() == player(s).getMaxHealth()), "Der Doppelsprung verursacht keinen Fallschaden");
+
+		// Wie beim Sprungkraft-Trank: Die sichere Fallhöhe steigt von 3 auf 6 Blöcke
+		check(server.computeOnServer(s -> player(s).getAttributeValue(Attributes.SAFE_FALL_DISTANCE)) == 6.0,
+			"Doppelsprung erhöht die sichere Fallhöhe auf 6 Blöcke");
+		check(fallDamage(context, server, 6) == 0.0F, "Ein Sturz aus 6 Blöcken richtet mit Doppelsprung keinen Schaden an");
+		check(fallDamage(context, server, 8) > 0.0F, "Ein Sturz aus 8 Blöcken schadet auch mit Doppelsprung");
 		server.runCommand("item replace entity @a armor.feet with minecraft:air");
+		context.waitTicks(5);
+		check(server.computeOnServer(s -> player(s).getAttributeValue(Attributes.SAFE_FALL_DISTANCE)) == 3.0,
+			"Ohne die Schuhe gilt wieder die normale sichere Fallhöhe");
+	}
+
+	/** Lässt den Spieler aus der angegebenen Höhe fallen und liefert den Schaden. Danach steht er wieder am Startpunkt. */
+	private static float fallDamage(final ClientGameTestContext context, final TestServerContext server, final int height) {
+		Vec3 start = server.computeOnServer(s -> player(s).position());
+		server.runOnServer(s -> player(s).setHealth(player(s).getMaxHealth()));
+		server.runCommand(String.format(Locale.ROOT, "tp @a %.2f %.2f %.2f", start.x, start.y + height, start.z));
+		context.waitTicks(2);
+		context.waitFor(m -> m.player.onGround());
+		context.waitTicks(5);
+		float damage = server.computeOnServer(s -> player(s).getMaxHealth() - player(s).getHealth());
+		LOGGER.info("[QoM-Test] Fallschaden aus {} Blöcken mit Doppelsprung: {}", height, damage);
+		server.runOnServer(s -> player(s).setHealth(player(s).getMaxHealth()));
+		return damage;
 	}
 
 	private static void testHealing(final ClientGameTestContext context, final TestServerContext server) {

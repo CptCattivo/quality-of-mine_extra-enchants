@@ -1,6 +1,16 @@
 {
 	"anvil_cost": 8,
 	"description": { "translate": "enchantment.qualityofmine.double_jump" },
+	"effects": {
+		"minecraft:attributes": [
+			{
+				"amount": 3.0,
+				"attribute": "minecraft:safe_fall_distance",
+				"id": "qualityofmine:enchantment.double_jump",
+				"operation": "add_value"
+			}
+		]
+	},
 	"max_cost": { "base": 65, "per_level_above_first": 0 },
 	"max_level": 1,
 	"min_cost": { "base": 15, "per_level_above_first": 0 },

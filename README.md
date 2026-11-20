@@ -126,6 +126,8 @@ Für Schuhe, nur eine Stufe. In der Luft springst du durch erneutes Drücken der
 Damit kommst du gut 2,5 Blöcke hoch, also über ein 2 Blöcke hohes Hindernis. Nach der Landung ist der Sprung wieder frei.
 
 - Am besten drückst du am höchsten Punkt des ersten Sprungs. Der Fallschaden zählt erst ab dem zweiten Sprung.
+- Wie beim Sprungkraft-Trank fängst du mehr Fallhöhe ab: Schaden gibt es erst ab 6 statt 3 Blöcken Sturz. Federfall
+  mildert größere Stürze wie gewohnt zusätzlich.
 - Auch nach dem Herunterlaufen von einer Kante kannst du einmal in der Luft springen.
 - Mit Elytren öffnet das erste Drücken in der Luft den Doppelsprung, erst das nächste die Elytren.
 - Im Kreativ-Modus, im Wasser, an Leitern und beim Reiten gibt es keinen Doppelsprung.
