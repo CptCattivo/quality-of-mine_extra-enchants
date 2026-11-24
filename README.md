@@ -15,6 +15,7 @@ unabhängig voneinander.
 | Sleep Lapse | `sleep-lapse` | Zeitraffer beim Schlafen |
 | Breeding Break | `breeding-break` | Ruhepause nach der Paarung |
 | Pocket Pals | `pocket-pals` | Bälle zum Fangen von Tieren, Gürtel dafür und Köcher für Pfeile |
+| Cart Sorter | `cart-sorter` | Lager, in das Loren ihre Ladung selbst einsortieren |
 
 ## Installation
 
