@@ -14,8 +14,9 @@ unabhängig voneinander.
 | Wide Hotbar | `wide-hotbar` | Item-Leiste mit 11 Plätzen |
 | Sleep Lapse | `sleep-lapse` | Zeitraffer beim Schlafen |
 | Breeding Break | `breeding-break` | Ruhepause nach der Paarung |
-| Pocket Pals | `pocket-pals` | Bälle zum Fangen von Tieren, Gürtel dafür und Köcher für Pfeile |
+| Pocket Pals | `pocket-pals` | Bälle zum Fangen von Tieren, Gürtel dafür, Köcher für Pfeile und Trankgurt für Tränke |
 | Cart Sorter | `cart-sorter` | Lager, in das Loren ihre Ladung selbst einsortieren |
+| Little Touches | `little-touches` | Kleine Verbesserungen wie Doppeltüren, die sich gemeinsam öffnen |
 
 ## Installation
 
